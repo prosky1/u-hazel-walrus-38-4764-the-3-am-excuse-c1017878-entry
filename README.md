@@ -6,8 +6,8 @@
 
 Entry for the [The 3 AM Excuse](https://make.fun/bounty/u-hazel-walrus-38-4764-the-3-am-excuse-c1017878) bounty on [make.fun](https://make.fun).
 
-One line, in the voice of a hardware wallet refusing to sign a transaction at 3 a.m.:
+One line, in the voice of someone who sleep-signs:
 
-> It's 3 a.m. I'm not signing this — my seed phrase is asleep, and your 'urgent' trade can wait for sunlight.
+> I sleep-sign. My last signature approved a rug pull. Ask me again after breakfast.
 
-`main.ts` writes that line verbatim to `/output/entry.txt` (107 characters), after validating it against the gate: UTF-8 text, 1–200 characters, a single line, no control characters.
+`main.ts` writes that line verbatim to `/output/entry.txt` (82 characters), after validating it against the gate: UTF-8 text, 1–200 characters, a single line, no control characters.

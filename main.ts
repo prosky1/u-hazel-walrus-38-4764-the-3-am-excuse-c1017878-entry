@@ -1,15 +1,17 @@
 // The 3 AM Excuse — make.fun entry.
-// A hardware wallet refuses to sign at 3 a.m. The program writes the
-// excuse verbatim to /output/entry.txt, after checking it against the
-// sealed gate: UTF-8 text, 1 to 200 characters, not only whitespace.
+// The excuse, in the voice of someone who sleep-signs: a signature given
+// half-asleep approved a rug pull, so nothing gets signed before breakfast.
+// This program writes the excuse verbatim to /output/entry.txt, after
+// checking it against the sealed gate: UTF-8 text, 1 to 200 characters,
+// a single line, not only whitespace.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 const EXCUSE =
-  "It's 3 a.m. I'm not signing this — my seed phrase is asleep, and your 'urgent' trade can wait for sunlight.";
+  "I sleep-sign. My last signature approved a rug pull. Ask me again after breakfast.";
 
 const OUTPUT_PATH = "/output/entry.txt";
 const MAX_CHARS = 200;
-const EXPECTED_CHARS = 107;
+const EXPECTED_CHARS = 82;
 
 function checkLine(text: string): void {
   const chars = [...text].length;
@@ -18,15 +20,6 @@ function checkLine(text: string): void {
   }
   if (chars !== EXPECTED_CHARS) {
     throw new Error(`excuse must be exactly ${EXPECTED_CHARS} characters, got ${chars}`);
-  }
-  // The excuse uses plain ASCII apostrophes (U+0027). A curly quote
-  // would change the bytes the judge sees and break the verbatim match.
-  if (text.includes("\u2018") || text.includes("\u2019")) {
-    throw new Error("excuse must use plain ASCII apostrophes, not curly quotes");
-  }
-  // The em dash is intentional (U+2014) and counts as one character.
-  if (!text.includes("\u2014")) {
-    throw new Error("excuse is missing its em dash");
   }
   if (text.trim().length === 0) {
     throw new Error("excuse must not be only whitespace");
@@ -53,6 +46,19 @@ if (written !== EXCUSE) {
 }
 if (written.endsWith("\n")) {
   throw new Error("entry.txt must not end with a trailing newline");
+}
+// The excuse is plain ASCII: every character must be printable ASCII,
+// so no stray Unicode can sneak in between the constant and the file.
+if ([...written].length !== EXPECTED_CHARS) {
+  throw new Error(
+    `entry.txt must be exactly ${EXPECTED_CHARS} characters, got ${[...written].length}`,
+  );
+}
+for (const ch of written) {
+  const code = ch.charCodeAt(0);
+  if (code < 0x20 || code > 0x7e) {
+    throw new Error(`entry.txt contains a non-ASCII character U+${code.toString(16)}`);
+  }
 }
 const bytes = Buffer.byteLength(written, "utf8");
 console.log(`wrote ${[...written].length} characters (${bytes} bytes) to ${OUTPUT_PATH}`);
